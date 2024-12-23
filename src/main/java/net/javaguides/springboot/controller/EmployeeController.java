@@ -1,8 +1,6 @@
 package net.javaguides.springboot.controller;
 
-import net.javaguides.springboot.exception.ResourceNotFoundException;
 import net.javaguides.springboot.model.Employee;
-import net.javaguides.springboot.repository.EmployeeRepository;
 import net.javaguides.springboot.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,28 +15,26 @@ import java.util.Optional;
 public class EmployeeController {
 
 
+    @Autowired
     private EmployeeService employeeService;
 
-
-
-    @Autowired
-    public EmployeeController(EmployeeService employeeService){
-        this.employeeService = employeeService;
+    //build create employee REST API
+    @PostMapping
+    public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee){
+        Employee savedEmployee = employeeService.createEmployee(employee);
+        return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
     }
+
+
 
     @GetMapping
     public List<Employee> getAllEmployees(){
-        return employeeService.getAllEmployee();
+        return employeeService.getAllEmployees();
 
-    }
-    //build create employee REST API
-    @PostMapping
-    public Employee createEmployee(@RequestBody Employee employee){
-        return employeeService.saveEmployee(employee);
     }
 
     //build get employee by id REST API
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Employee> getEmployeeById(@PathVariable Long id){
        Optional<Employee> employee = employeeService.getEmployeeById(id);
 
@@ -46,10 +42,15 @@ public class EmployeeController {
                 .orElseGet(()->ResponseEntity.notFound().build());
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Employee> updateEmployee(@PathVariable Long id, @RequestBody Employee employee){
+        Employee updateEmployee = employeeService.updateEmployee(id, employee);
+        return ResponseEntity.ok(updateEmployee);
+    }
 
     //build delete employee REST API
      @DeleteMapping("{id}")
-    public ResponseEntity<HttpStatus> deleteEmployee(@PathVariable long id){
+    public ResponseEntity<HttpStatus> deleteEmployee(@PathVariable Long id){
 
        employeeService.deleteEmployee(id);
        return ResponseEntity.noContent().build();

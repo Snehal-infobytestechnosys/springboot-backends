@@ -12,14 +12,16 @@ import java.util.Optional;
 @Service
 public class EmployeeService {
 
+    @Autowired
     private EmployeeRepository employeeRepository;
 
-    @Autowired
-    public EmployeeService(EmployeeRepository employeeRepository){
-        this.employeeRepository = employeeRepository;
+
+    public Employee createEmployee(Employee employee){
+        return employeeRepository.save(employee);
     }
 
-    public List<Employee> getAllEmployee(){
+    public List<Employee> getAllEmployees(){
+
         return employeeRepository.findAll();
     }
 
@@ -27,11 +29,13 @@ public class EmployeeService {
         return employeeRepository.findById(id);
     }
 
-    public Employee saveEmployee(Employee employee){
+    public Employee updateEmployee(Long id, Employee employee){
+        employee.setId(id);
         return employeeRepository.save(employee);
     }
 
     public void deleteEmployee(Long id){
+
         employeeRepository.deleteById(id);
     }
 
